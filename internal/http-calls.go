@@ -35,7 +35,7 @@ const postAuthInitRequestPayload = `<?xml version="1.0" encoding="UTF-8"?>
 				<config-auth client="vpn" type="init" aggregate-auth-version="2">
 					<version who="vpn">%s</version>
 					<device-id>linux-64</device-id>
-					<group-select></group-select>
+					<group-select>%s</group-select>
 					<group-access>%s</group-access>
 					<capabilities>
 						<auth-method>single-sign-on-v2</auth-method>
@@ -83,7 +83,7 @@ type AuthenticationInitExpectedResponse struct {
 
 // AuthenticationInit sends a http request to _url to get the actual URL and initiate SAML login request
 func (oc *OpenconnectCtx) AuthenticationInit() (*AuthenticationInitExpectedResponse, error) {
-	payload := fmt.Sprintf(postAuthInitRequestPayload, VERSION, oc.targetUrl)
+	payload := fmt.Sprintf(postAuthInitRequestPayload, VERSION, oc.authGroup, oc.targetUrl)
 
 	post, err := oc.client.Post(oc.targetUrl, `application/x-www-form-urlencoded`, bytes.NewBuffer([]byte(payload)))
 	if err != nil {

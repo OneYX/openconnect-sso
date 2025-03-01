@@ -21,11 +21,12 @@ type OpenconnectCtx struct {
 	server          string
 	username        string
 	password        string
+	authGroup       string
 	browserCtx      context.Context
 	closeBrowser    context.CancelFunc
 }
 
-func NewOpenconnectCtx(server, username, password string) *OpenconnectCtx {
+func NewOpenconnectCtx(server, username, password, authgroup string) *OpenconnectCtx {
 	client := NewHttpClient(server)
 	exit := make(chan os.Signal)
 
@@ -39,6 +40,7 @@ func NewOpenconnectCtx(server, username, password string) *OpenconnectCtx {
 		targetUrl:       getActualUrl(client, server),
 		username:        username,
 		password:        password,
+		authGroup:       authgroup,
 	}
 }
 
@@ -112,6 +114,8 @@ func (oc *OpenconnectCtx) startVpnOnLoginCookie(auth *AuthenticationInitExpected
 		oc.process.Stdin = os.Stdin
 
 		log.Println("Starting openconnect: ", oc.process.String())
+		// 保存认证信息
+
 		return oc.process.Run()
 	}
 
